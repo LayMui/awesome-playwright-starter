@@ -6,15 +6,15 @@ test('iframe + shadow DOM tea interaction', async ({ page }) => {
 
     await link.click();
 
-    await page.waitForLoadState("domcontentloaded");
+    await page.waitForLoadState('domcontentloaded', { timeout: 60000 }); // 60 seconds
 
-    const iframe = await page.frameLocator("//iframe[@id='pact']");
-    try {
-        await iframe.locator("#tea").fill("Chamoment", { timeout: 10000 });
-      } catch (error) {
-        // Wait a bit more and retry
-        await page.waitForTimeout(2000);
-        await iframe.locator("#tea").fill("Chamoment");
-      }
+    const iframeElement = page.locator("//iframe[@id='pact']");
+    await iframeElement.waitFor({ state: 'visible', timeout: 60_000 });
+
+
+    await page.locator("iframe#pact").waitFor({ state: 'visible' });
+    const iframe = page.frameLocator("iframe#pact");
+
+    await iframe.locator("#tea").fill("Chamoment", { timeout: 60_000 });
    
 });
